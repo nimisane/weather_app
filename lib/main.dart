@@ -36,17 +36,17 @@ class MyApp extends StatelessWidget {
             create: (context) => TempSettingsBloc(),
           ),
           BlocProvider<ThemeBloc>(
-            create: (context) => ThemeBloc(weatherBloc: context.read<WeatherBloc>()),
+            create: (context) => ThemeBloc(),
           )
         ],
         child: 
-        //BlocListener<WeatherBloc, WeatherState>(
-          // listener: (context, state) {
-          //   double currentTemp = state.weatherModel.temp;
+        BlocListener<WeatherBloc, WeatherState>(
+          listener: (context, state) {
+            double currentTemp = state.weatherModel.temp;
 
-          //   context.read<ThemeBloc>().add(ChangeThemeEvent(appTheme: ));
-          // },
-          // child: 
+            context.read<ThemeBloc>().setTheme(currentTemp);
+          },
+          child: 
           BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
               return MaterialApp(
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-        // ),
+        ),
       ),
     );
   }
