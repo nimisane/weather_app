@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:weather_app/cubits/change_theme/change_theme_cubit.dart';
-import 'package:weather_app/cubits/temp_settings/temp_settings_cubit.dart';
-import 'package:weather_app/cubits/weather/weather_cubit.dart';
+import 'package:weather_app/blocs/temp_settings/temp_settings_bloc.dart';
+import 'package:weather_app/blocs/theme/theme_bloc.dart';
+import 'package:weather_app/blocs/weather/weather_bloc.dart';
+
 import 'package:weather_app/pages/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/repositories/weather_repository.dart';
@@ -28,23 +29,25 @@ class MyApp extends StatelessWidget {
       ),
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<WeatherCubit>(
-              create: (context) => WeatherCubit(
+          BlocProvider<WeatherBloc>(
+              create: (context) => WeatherBloc(
                   weatherRepository: context.read<WeatherRepository>())),
-          BlocProvider<TempSettingsCubit>(
-            create: (context) => TempSettingsCubit(),
+          BlocProvider<TempSettingsBloc>(
+            create: (context) => TempSettingsBloc(),
           ),
-          BlocProvider<ChangeThemeCubit>(
-            create: (context) => ChangeThemeCubit(),
+          BlocProvider<ThemeBloc>(
+            create: (context) => ThemeBloc(weatherBloc: context.read<WeatherBloc>()),
           )
         ],
-        child: BlocListener<WeatherCubit, WeatherState>(
-          listener: (context, state) {
-            double currentTemp = state.weatherModel.temp;
+        child: 
+        //BlocListener<WeatherBloc, WeatherState>(
+          // listener: (context, state) {
+          //   double currentTemp = state.weatherModel.temp;
 
-            context.read<ChangeThemeCubit>().changeTheme(currentTemp);
-          },
-          child: BlocBuilder<ChangeThemeCubit, ChangeThemeState>(
+          //   context.read<ThemeBloc>().add(ChangeThemeEvent(appTheme: ));
+          // },
+          // child: 
+          BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
               return MaterialApp(
                 title: 'Weather',
@@ -56,7 +59,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-        ),
+        // ),
       ),
     );
   }
